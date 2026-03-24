@@ -3,25 +3,23 @@
 // variables
 string dbName = "";
 // Welcome message
-Console.WriteLine("Welcome to the .Net App Database Setup assistant"); 
+Console.WriteLine("Welcome to the .Net App Database Setup assistant");
 while (true)
 {
     // Database options
-    Console.WriteLine("Choose which database you like to connect to: MsSql (1), MySql (2), PostgresSql (3), Exit (q)");
+    Console.WriteLine("Choose which database you like to connect to: MsSql (1), PostgresSql (2), Exit (q)");
     // user input
     string? dbOptionUserInput = Console.ReadLine()?.Trim();
 
     if (String.IsNullOrEmpty(dbOptionUserInput))
     {
-        Console.WriteLine("Please enter a valid database name");
+        Console.WriteLine("Please enter a valid option: 1, 2 or q");
         continue;
     }
 
     if (dbOptionUserInput.ToLower() == "q")
     {
         Console.WriteLine("Exiting ...");
-        return;
-    }
-    
-  
+    } 
+    break;
 }
