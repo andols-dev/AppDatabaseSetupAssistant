@@ -1,7 +1,7 @@
 ﻿
 // Console Application , .NET App Database setup assistant
 // variables
-string dbOption = "";
+string? dbOption = null;
 // Welcome message
 Console.WriteLine("Welcome to the .Net App Database Setup assistant");
 while (true)
@@ -20,6 +20,7 @@ while (true)
     if (dbOptionUserInput.ToLower() == "q")
     {
         Console.WriteLine("Exiting ...");
+        return;
     }
 
     dbOption = dbOptionUserInput switch
@@ -28,6 +29,12 @@ while (true)
         "2" => "PostgresSql",
         _ => null
     };
+
+    if (dbOption == null)
+    {
+        Console.WriteLine("Please enter a valid option: 1, 2 or q");
+        continue;
+    }
     break;
 }
-Console.WriteLine($"Using {dbOption} in {dbOption}");
+Console.WriteLine($"Using {dbOption}");
