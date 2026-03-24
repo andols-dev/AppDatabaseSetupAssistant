@@ -8,4 +8,20 @@ while (true)
 {
     // Database options
     Console.WriteLine("Choose which database you like to connect to: MsSql (1), MySql (2), PostgresSql (3), Exit (q)");
+    // user input
+    string? dbOptionUserInput = Console.ReadLine()?.Trim();
+
+    if (String.IsNullOrEmpty(dbOptionUserInput))
+    {
+        Console.WriteLine("Please enter a valid database name");
+        continue;
+    }
+
+    if (dbOptionUserInput.ToLower() == "q")
+    {
+        Console.WriteLine("Exiting ...");
+        return;
+    }
+    
+  
 }
