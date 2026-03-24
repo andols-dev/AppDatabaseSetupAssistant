@@ -1,42 +1,13 @@
 ﻿// Console Application , .NET App Database setup assistant
 // variables
-using System.Runtime.CompilerServices;
 
-string? dbOption = null;
 // Welcome message
 Console.WriteLine("Welcome to the .Net App Database Setup assistant");
-while (true)
+string? dbOption = GetDatabaseChoice();
+if (dbOption == null)
 {
-    // Database options
-    Console.WriteLine("Choose which database you like to connect to: MsSql (1), PostgresSql (2), Exit (q)");
-    // user input
-    string? dbOptionUserInput = Console.ReadLine()?.Trim();
-
-    if (String.IsNullOrEmpty(dbOptionUserInput))
-    {
-        Console.WriteLine("Please enter a valid option: 1, 2 or q");
-        continue;
-    }
-
-    if (dbOptionUserInput.ToLower() == "q")
-    {
-        Console.WriteLine("Exiting ...");
-        return;
-    }
-
-    dbOption = dbOptionUserInput switch
-    {
-        "1" => "MsSql",
-        "2" => "PostgresSql",
-        _ => null
-    };
-
-    if (dbOption == null)
-    {
-        Console.WriteLine("Please enter a valid option: 1, 2 or q");
-        continue;
-    }
-    break;
+    Console.WriteLine("Exiting ...");
+    return;
 }
 Console.WriteLine($"Using {dbOption}");
 
@@ -73,10 +44,25 @@ if (dbOption == "MsSql")
         }
         Console.WriteLine("Do you want to add \"TrustServerCertificate=True\" (y/n)");
         string? serverCertificate = Console.ReadLine()?.Trim();
+        if (String.IsNullOrEmpty(serverCertificate))
+        {
+            Console.WriteLine("Please enter a valid option: y or n");
+            continue;
+        }
         Console.WriteLine("Do you want to add \"MultipleActiveResultSets=True\" (y/n)");
         string? activeResultSets = Console.ReadLine()?.Trim();
+        if (String.IsNullOrEmpty(activeResultSets))
+        {
+            Console.WriteLine("Please enter a valid option: y or n");
+            continue;
+        }
         Console.WriteLine("Do you want to add \"Trusted_Connection=True\" (y/n)");
         string? trustedConnection = Console.ReadLine()?.Trim();
+        if (String.IsNullOrEmpty(trustedConnection))
+        {
+            Console.WriteLine("Please enter a valid option: y or n");
+            continue;
+        }
 
         string trustCert = serverCertificate?.ToLower() == "y" ? "TrustServerCertificate=True;" : "";
         string trustConn = trustedConnection?.ToLower() == "y" ? "Trusted_Connection=True;" : "";
@@ -87,6 +73,46 @@ if (dbOption == "MsSql")
     }
 
 }
+
+
+static string GetDatabaseChoice()
+{
+    while (true)
+    {
+        // Database options
+        Console.WriteLine("Choose which database you like to connect to: MsSql (1), PostgresSql (2), Exit (q)");
+        // user input
+        string? dbOptionUserInput = Console.ReadLine()?.Trim();
+
+        if (String.IsNullOrEmpty(dbOptionUserInput))
+        {
+            Console.WriteLine("Please enter a valid option: 1, 2 or q");
+            continue;
+        }
+
+        if (dbOptionUserInput.ToLower() == "q")
+        {
+            return null; // Indicate exit
+        }
+
+        string? dbOption = dbOptionUserInput switch
+        {
+            "1" => "MsSql",
+            "2" => "PostgresSql",
+            _ => null
+        };
+
+        if (dbOption == null)
+        {
+            Console.WriteLine("Please enter a valid option: 1, 2 or q");
+            continue;
+        }
+        return dbOption;
+    }
+}
+
+
+
 // implementation for PostgresSql can be added here
 /* else if (dbOption == "PostgresSql")
 {
