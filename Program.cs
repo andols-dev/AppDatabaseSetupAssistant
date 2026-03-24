@@ -20,7 +20,14 @@ while (true)
     if (dbOptionUserInput.ToLower() == "q")
     {
         Console.WriteLine("Exiting ...");
-    } 
-    
+    }
+
+    dbOption = dbOptionUserInput switch
+    {
+        "1" => "MsSql",
+        "2" => "PostgresSql",
+        _ => null
+    };
     break;
 }
+Console.WriteLine($"Using {dbOption} in {dbOption}");
