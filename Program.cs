@@ -1,5 +1,4 @@
-﻿
-// Console Application , .NET App Database setup assistant
+﻿// Console Application , .NET App Database setup assistant
 // variables
 string? dbOption = null;
 // Welcome message
@@ -44,20 +43,18 @@ Console.WriteLine($"Using {dbOption}");
 if (dbOption == "MsSql")
 {
     Console.WriteLine($"In order to create a connection string for a {dbOption} database you need to answer the following questions");
+    Console.WriteLine("What is the server name?");
     string? serverName = Console.ReadLine()?.Trim();
     Console.WriteLine($"Create the name for the database");
     string? databaseName = Console.ReadLine()?.Trim();
+    Console.WriteLine("Do you want to trust the server certificate? (True/False)");
     string? serverCertificate = Console.ReadLine()?.Trim();
+    Console.WriteLine("Do you want to enable active result sets? (True/False)");
     string? activeResultSets = Console.ReadLine()?.Trim();
+    Console.WriteLine("Do you want to use trusted connection? (True/False)");
     string? trustedConnection = Console.ReadLine()?.Trim();
 
-    string connectionString = $$"""
-                                {{serverName}};
-                                {{databaseName}};
-                                {{activeResultSets}}; 
-                                {{trustedConnection}};
-                                {{serverCertificate}};
-                                """;
+    string connectionString = $@"Server={serverName};Database={databaseName};Trusted_Connection={trustedConnection};TrustServerCertificate={serverCertificate};MultipleActiveResultSets={activeResultSets};";
 
 }
 else if (dbOption == "PostgresSql")
