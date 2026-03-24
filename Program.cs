@@ -38,3 +38,34 @@ while (true)
     break;
 }
 Console.WriteLine($"Using {dbOption}");
+
+// Create connection string based on chosen option
+// connection string
+if (dbOption == "MsSql")
+{
+    Console.WriteLine($"In order to create a connection string for a {dbOption} database you need to answer the following questions");
+    string? serverName = Console.ReadLine()?.Trim();
+    Console.WriteLine($"Create the name for the database");
+    string? databaseName = Console.ReadLine()?.Trim();
+    string? serverCertificate = Console.ReadLine()?.Trim();
+    string? activeResultSets = Console.ReadLine()?.Trim();
+    string? trustedConnection = Console.ReadLine()?.Trim();
+
+    string connectionString = $$"""
+                                {{serverName}};
+                                {{databaseName}};
+                                {{activeResultSets}}; 
+                                {{trustedConnection}};
+                                {{serverCertificate}};
+                                """;
+
+}
+else if (dbOption == "PostgresSql")
+{
+    Console.WriteLine($"In order to create a connection string for a {dbOption} database you need to answer the following questions");
+    string? host = Console.ReadLine()?.Trim();
+    Console.WriteLine($"Create the name for the database");
+    string? databaseName = Console.ReadLine()?.Trim();
+    string? username = Console.ReadLine()?.Trim();
+    string? password = Console.ReadLine()?.Trim();
+}
