@@ -1,7 +1,7 @@
 ﻿
 // Console Application , .NET App Database setup assistant
 // variables
-string dbName = "";
+string dbOption = "";
 // Welcome message
 Console.WriteLine("Welcome to the .Net App Database Setup assistant");
 while (true)
@@ -21,5 +21,6 @@ while (true)
     {
         Console.WriteLine("Exiting ...");
     } 
+    
     break;
 }
