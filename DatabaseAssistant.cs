@@ -11,7 +11,6 @@ public static class DatabaseAssistant
             Console.WriteLine(
                 $"In order to create a connection string for a {dbOption} database you need to answer the following questions");
 
-            Console.WriteLine("What do you want to name the connection string?");
             string? connString = Console.ReadLine()?.Trim();
             if (String.IsNullOrEmpty(connString))
             {
