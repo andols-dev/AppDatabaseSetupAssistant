@@ -49,38 +49,36 @@ public static class DatabaseAssistant
 
 
     }
-    public static DatabaseType? GetDatabaseChoice()
+    public static DatabaseType GetDatabaseChoice()
     {
-        while (true)
+        DatabaseType choice = DatabaseType.None;
+
+        while (choice == DatabaseType.None)
         {
-            Console.WriteLine("Choose which database you like to connect to: MsSql (1), PostgresSql (2), Exit (q)");
-            string? dbOptionUserInput = Console.ReadLine()?.Trim();
+            Console.WriteLine($"Choose database option: (1) {DatabaseType.MsSql},(2) {DatabaseType.PostgresSql} ");
 
-            if (String.IsNullOrEmpty(dbOptionUserInput))
+            var input = Console.ReadLine()?.Trim();
+
+            if (String.IsNullOrWhiteSpace(input))
             {
-                Console.WriteLine("Please enter a valid option: 1, 2 or q");
+                Console.WriteLine("You need to choose a valid database option");
                 continue;
             }
-
-            if (dbOptionUserInput.ToLower() == "q")
+            switch (input)
             {
-                return null; // Indicate exit
+                case "1":
+                    choice = DatabaseType.MsSql;
+                    break;
+                case "2":
+                    choice = DatabaseType.PostgresSql;
+                    break;
+                default:
+                    Console.WriteLine("You need to choose a valid database option");
+                    break;
             }
-
-            DatabaseType? dbOption = dbOptionUserInput switch
-            {
-                "1" => DatabaseType.MsSql,
-                "2" => DatabaseType.PostgresSql,
-                _ => null
-            };
-
-            if (dbOption == null)
-            {
-                Console.WriteLine("Please enter a valid option: 1, 2 or q");
-                continue;
-            }
-            return dbOption;
         }
+
+        return choice;
     }
     private static string GetYesNoInput(string prompt)
     {
