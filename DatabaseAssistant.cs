@@ -47,17 +47,7 @@ public static class DatabaseAssistant
             return connectionString;
         }
 
-        static string GetYesNoInput(string prompt)
-        {
-            while (true)
-            {
-                Console.WriteLine(prompt);
-                string? input = Console.ReadLine()?.Trim();
-                if (input?.ToLower() is "y" or "n")
-                    return input;
-                Console.WriteLine("Please enter a valid option: y or n");
-            }
-        }
+
     }
     public static DatabaseType? GetDatabaseChoice()
     {
@@ -90,6 +80,17 @@ public static class DatabaseAssistant
                 continue;
             }
             return dbOption;
+        }
+    }
+    private static string GetYesNoInput(string prompt)
+    {
+        while (true)
+        {
+            Console.WriteLine(prompt);
+            string? input = Console.ReadLine()?.Trim();
+            if (input?.ToLower() is "y" or "n")
+                return input;
+            Console.WriteLine("Please enter a valid option: y or n");
         }
     }
 }
