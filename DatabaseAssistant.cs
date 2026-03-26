@@ -61,6 +61,7 @@ public static class DatabaseAssistant
 
             Console.WriteLine("Enter username:");
             string? username = Console.ReadLine()?.Trim();
+
             Console.WriteLine("Enter password:");
             string? password = Console.ReadLine()?.Trim();
 
@@ -70,10 +71,8 @@ public static class DatabaseAssistant
         return connectionString;
     }
 
-    private static string? CreateMsSqlString(string? dbName)
+    private static string CreateMsSqlString(string dbName)
     {
-        //mssql
-        // "Server=(localdb)\\mssqllocaldb;Database=OneToManyDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=True"
         string? connectionString = null;
         while (connectionString == null)
         {
