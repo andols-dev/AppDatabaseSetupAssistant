@@ -6,33 +6,82 @@ public static class DatabaseAssistant
 {
     public static string CreateString(DatabaseType dbOption)
     {
-        while (true)
+        string? connectionString = null;
+
+        string? dbName = null;
+        // choose a name for the database
+        while (dbName == null)
         {
-            Console.WriteLine(
-                $"In order to create a connection string for a {dbOption} database you need to answer the following questions");
-
-            string? connString = Console.ReadLine()?.Trim();
-            if (String.IsNullOrEmpty(connString))
+            Console.WriteLine("Choose a name for the database");
+            dbName = Console.ReadLine();
+            if (String.IsNullOrWhiteSpace(dbName))
             {
-                Console.WriteLine("Please enter a valid connection string");
-                continue;
+                Console.WriteLine("You need to choose a name for the database");
+                dbName = null;  // Reset to null to repeat the loop
+            }
+        }
+
+        switch (dbOption)
+        {
+            case DatabaseType.MsSql:
+                connectionString = CreateMsSqlString(dbName);
+                break;
+            case DatabaseType.PostgresSql:
+                connectionString = CreatePostgresString(dbName);
+                break;
+
+            default:
+                Console.WriteLine("Invalid database option");
+                break;
+
+        }
+
+        return connectionString;
+
+    }
+
+    private static string? CreatePostgresString(string? dbName)
+    {
+        string? connectionString = null;
+        while (connectionString == null)
+        {
+            Console.WriteLine("Enter host (default: localhost), leave blank for default:");
+            string? host = Console.ReadLine()?.Trim();
+            if (String.IsNullOrWhiteSpace(host))
+            {
+                host = "localhost";
             }
 
-            Console.WriteLine("What is the server name?");
-            string? serverName = Console.ReadLine()?.Trim();
-
-            if (String.IsNullOrEmpty(serverName))
+            Console.WriteLine("Enter port (default: 5432), leave blank for default:");
+            string? port = Console.ReadLine()?.Trim();
+            if (String.IsNullOrWhiteSpace(port))
             {
-                Console.WriteLine("Please enter a valid server name");
-                continue;
+                port = "5432";
             }
 
-            Console.WriteLine($"Create the name for the database");
-            string? databaseName = Console.ReadLine()?.Trim();
-            if (String.IsNullOrEmpty(databaseName))
+            Console.WriteLine("Enter username:");
+            string? username = Console.ReadLine()?.Trim();
+            Console.WriteLine("Enter password:");
+            string? password = Console.ReadLine()?.Trim();
+
+            connectionString = $"Host={host};Port={port};Database={dbName};Username={username};Password={password}";
+        }
+
+        return connectionString;
+    }
+
+    private static string? CreateMsSqlString(string? dbName)
+    {
+        //mssql
+        // "Server=(localdb)\\mssqllocaldb;Database=OneToManyDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=True"
+        string? connectionString = null;
+        while (connectionString == null)
+        {
+            Console.WriteLine("Enter server (default: (localdb)\\mssqllocaldb), leave blank for default:");
+            string? server = Console.ReadLine();
+            if (String.IsNullOrWhiteSpace(server))
             {
-                Console.WriteLine("Please enter a valid database name");
-                continue;
+                server = "(localdb)\\mssqllocaldb";
             }
 
             string serverCertificate = GetYesNoInput("Do you want to add \"TrustServerCertificate=True\" (y/n)");
@@ -42,12 +91,13 @@ public static class DatabaseAssistant
             string trustCert = serverCertificate == "y" ? "TrustServerCertificate=True;" : "";
             string trustConn = trustedConnection == "y" ? "Trusted_Connection=True;" : "";
             string mars = activeResultSets == "y" ? "MultipleActiveResultSets=True;" : "";
-            string connectionString = $"\"Server={serverName};Database={databaseName};{trustCert}{trustConn}{mars}\"";
-            return connectionString;
+            connectionString = $"\"Server={server};Database={dbName};{trustCert}{trustConn}{mars}\"";
+
         }
 
-
+        return connectionString;
     }
+
     public static DatabaseType GetDatabaseChoice()
     {
         DatabaseType choice = DatabaseType.None;
