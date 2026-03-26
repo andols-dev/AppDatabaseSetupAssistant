@@ -4,50 +4,62 @@ using AppDatabaseSetupAssistant.Enums;
 
 public static class DatabaseAssistant
 {
-    public static string CreateString(DatabaseType dbOption)
+    public static void CreateString(DatabaseType dbOption)
     {
-        while (true)
+        string? connectionString = null;
+        //postgres
+        // "Host=localhost;Port=5432;Database=mydb;Username=postgres;Password=yourpassword"
+
+        //mssql
+        // "Server=(localdb)\\mssqllocaldb;Database=OneToManyDb;Trusted_Connection=True;MultipleActiveResultSets=true; TrustServerCertificate=True"
+        string? dbName = null;
+        // choose a name for the database
+        while (dbName == null)
         {
-            Console.WriteLine(
-                $"In order to create a connection string for a {dbOption} database you need to answer the following questions");
-
-            string? connString = Console.ReadLine()?.Trim();
-            if (String.IsNullOrEmpty(connString))
+            Console.WriteLine("Choose a name for the database");
+            dbName = Console.ReadLine();
+            if (String.IsNullOrWhiteSpace(dbName))
             {
-                Console.WriteLine("Please enter a valid connection string");
-                continue;
+                Console.WriteLine("You need to choose a name for the database");
+                dbName = null;  // Reset to null to repeat the loop
             }
-
-            Console.WriteLine("What is the server name?");
-            string? serverName = Console.ReadLine()?.Trim();
-
-            if (String.IsNullOrEmpty(serverName))
-            {
-                Console.WriteLine("Please enter a valid server name");
-                continue;
-            }
-
-            Console.WriteLine($"Create the name for the database");
-            string? databaseName = Console.ReadLine()?.Trim();
-            if (String.IsNullOrEmpty(databaseName))
-            {
-                Console.WriteLine("Please enter a valid database name");
-                continue;
-            }
-
-            string serverCertificate = GetYesNoInput("Do you want to add \"TrustServerCertificate=True\" (y/n)");
-            string activeResultSets = GetYesNoInput("Do you want to add \"MultipleActiveResultSets=True\" (y/n)");
-            string trustedConnection = GetYesNoInput("Do you want to add \"Trusted_Connection=True\" (y/n)");
-
-            string trustCert = serverCertificate == "y" ? "TrustServerCertificate=True;" : "";
-            string trustConn = trustedConnection == "y" ? "Trusted_Connection=True;" : "";
-            string mars = activeResultSets == "y" ? "MultipleActiveResultSets=True;" : "";
-            string connectionString = $"\"Server={serverName};Database={databaseName};{trustCert}{trustConn}{mars}\"";
-            return connectionString;
         }
 
 
+
+
+
+
+        /*         switch (dbOption)
+                {
+                    case DatabaseType.MsSql:
+                        connectionString = CreateMsSqlString(dbName);
+                        break;
+                    case DatabaseType.PostgresSql:
+                        connectionString = CreatePostgresString(dbName);
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid database option");
+                        break;
+
+                }
+         */
+        //return connectionString;
+        System.Console.WriteLine(("dbName: ", dbName));
+
     }
+
+    private static string? CreatePostgresString(string? dbName)
+    {
+        throw new NotImplementedException();
+    }
+
+    private static string? CreateMsSqlString(string? dbName)
+    {
+        throw new NotImplementedException();
+    }
+
     public static DatabaseType GetDatabaseChoice()
     {
         DatabaseType choice = DatabaseType.None;
