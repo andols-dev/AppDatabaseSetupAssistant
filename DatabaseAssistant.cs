@@ -57,15 +57,30 @@ public static class DatabaseAssistant
         }
 
         Console.WriteLine("Enter username:");
+        Prompt();
         string? username = Console.ReadLine()?.Trim();
 
         Console.WriteLine("Enter password:");
+        Prompt();
         string? password = Console.ReadLine()?.Trim();
 
         string connectionString = $"Host={host};Port={port};Database={dbName};Username={username};Password={password}";
 
 
         return connectionString;
+    }
+
+    private static void Prompt()
+    {
+        while (true)
+        {
+            string? input = Console.ReadLine()?.Trim();
+            if (!String.IsNullOrWhiteSpace(input))
+            {
+                break;
+            }
+            Console.WriteLine("Username cannot be empty. Please enter a valid username:");
+        }
     }
 
     private static string CreateMsSqlString(string dbName)
