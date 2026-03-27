@@ -1,25 +1,18 @@
 ﻿namespace AppDatabaseSetupAssistant;
 
 using AppDatabaseSetupAssistant.Enums;
+using Spectre.Console;
 
 public static class DatabaseAssistant
 {
     public static string CreateString(DatabaseType dbOption)
     {
-        string connectionString = String.Empty;
+        string dbName = AnsiConsole.Prompt(
+            new TextPrompt<string>("[bold cyan]Choose a name for the database:[/]")
+                .PromptStyle("green")
+                .Validate(input => string.IsNullOrWhiteSpace(input) ? ValidationResult.Error("[red]Database name cannot be empty[/]") : ValidationResult.Success()));
 
-        string? dbName = null;
-        // choose a name for the database
-        while (dbName == null)
-        {
-            Console.WriteLine("Choose a name for the database");
-            dbName = Console.ReadLine();
-            if (String.IsNullOrWhiteSpace(dbName))
-            {
-                Console.WriteLine("You need to choose a name for the database");
-                dbName = null;  // Reset to null to repeat the loop
-            }
-        }
+        string connectionString = String.Empty;
 
         switch (dbOption)
         {
@@ -31,7 +24,7 @@ public static class DatabaseAssistant
                 break;
 
             default:
-                Console.WriteLine("Invalid database option");
+                AnsiConsole.MarkupLine("[red]Invalid database option[/]");
                 break;
 
         }
@@ -42,107 +35,58 @@ public static class DatabaseAssistant
 
     private static string CreatePostgresString(string dbName)
     {
-        Console.WriteLine("Enter host (default: localhost), leave blank for default:");
-        string? host = Console.ReadLine()?.Trim();
-        if (String.IsNullOrWhiteSpace(host))
-        {
-            host = "localhost";
-        }
+        string host = AnsiConsole.Prompt(
+            new TextPrompt<string>("[bold cyan]Enter host:[/]")
+                .PromptStyle("green")
+                .DefaultValue("localhost"));
 
-        Console.WriteLine("Enter port (default: 5432), leave blank for default:");
-        string? port = Console.ReadLine()?.Trim();
-        if (String.IsNullOrWhiteSpace(port))
-        {
-            port = "5432";
-        }
+        string port = AnsiConsole.Prompt(
+            new TextPrompt<string>("[bold cyan]Enter port:[/]")
+                .PromptStyle("green")
+                .DefaultValue("5432")
+                .Validate(input => int.TryParse(input, out _) ? ValidationResult.Success() : ValidationResult.Error("[red]Port must be a valid number[/]")));
 
-        Console.WriteLine("Enter username:");
-        Prompt();
-        string? username = Console.ReadLine()?.Trim();
+        string username = AnsiConsole.Prompt(
+            new TextPrompt<string>("[bold cyan]Enter username:[/]")
+                .PromptStyle("green")
+                .Validate(input => string.IsNullOrWhiteSpace(input) ? ValidationResult.Error("[red]Username cannot be empty[/]") : ValidationResult.Success()));
 
-        Console.WriteLine("Enter password:");
-        Prompt();
-        string? password = Console.ReadLine()?.Trim();
+        string password = AnsiConsole.Prompt(
+            new TextPrompt<string>("[bold cyan]Enter password:[/]")
+                .PromptStyle("green")
+                .Validate(input => string.IsNullOrWhiteSpace(input) ? ValidationResult.Error("[red]Password cannot be empty[/]") : ValidationResult.Success())
+                .Secret());
 
         string connectionString = $"Host={host};Port={port};Database={dbName};Username={username};Password={password}";
-
 
         return connectionString;
     }
 
-    private static void Prompt()
-    {
-        while (true)
-        {
-            string? input = Console.ReadLine()?.Trim();
-            if (!String.IsNullOrWhiteSpace(input))
-            {
-                break;
-            }
-            Console.WriteLine("Username cannot be empty. Please enter a valid username:");
-        }
-    }
 
     private static string CreateMsSqlString(string dbName)
     {
-        Console.WriteLine("Enter server (default: (localdb)\\mssqllocaldb), leave blank for default:");
-        string? server = Console.ReadLine();
-        if (String.IsNullOrWhiteSpace(server))
-        {
-            server = "(localdb)\\mssqllocaldb";
-        }
+        string server = AnsiConsole.Prompt(
+            new TextPrompt<string>("[bold cyan]Enter server:[/]")
+                .PromptStyle("green")
+                .DefaultValue("(localdb)\\mssqllocaldb"));
 
-        string serverCertificate = GetYesNoInput("Do you want to add \"TrustServerCertificate=True\" (y/n)");
-        string activeResultSets = GetYesNoInput("Do you want to add \"MultipleActiveResultSets=True\" (y/n)");
-        string trustedConnection = GetYesNoInput("Do you want to add \"Trusted_Connection=True\" (y/n)");
+        bool trustServerCert = AnsiConsole.Confirm("[bold cyan]Add TrustServerCertificate=True?[/]", false);
+        bool multipleActiveResultSets = AnsiConsole.Confirm("[bold cyan]Add MultipleActiveResultSets=True?[/]", false);
+        bool trustedConnection = AnsiConsole.Confirm("[bold cyan]Add Trusted_Connection=True?[/]", false);
 
-        string trustCert = serverCertificate == "y" ? "TrustServerCertificate=True;" : "";
-        string trustConn = trustedConnection == "y" ? "Trusted_Connection=True;" : "";
-        string mars = activeResultSets == "y" ? "MultipleActiveResultSets=True;" : "";
-        string connectionString = $"\"Server={server};Database={dbName};{trustCert}{trustConn}{mars}\"";
+        string trustCert = trustServerCert ? "TrustServerCertificate=True;" : "";
+        string mars = multipleActiveResultSets ? "MultipleActiveResultSets=True;" : "";
+        string trustConn = trustedConnection ? "Trusted_Connection=True;" : "";
+        string connectionString = $"Server={server};Database={dbName};{trustCert}{trustConn}{mars}";
         return connectionString;
     }
 
     public static DatabaseType GetDatabaseChoice()
     {
-        DatabaseType choice = DatabaseType.None;
-
-        while (choice == DatabaseType.None)
-        {
-            Console.WriteLine($"Choose database option: (1) {DatabaseType.MsSql},(2) {DatabaseType.PostgresSql} ");
-
-            var input = Console.ReadLine()?.Trim();
-
-            if (String.IsNullOrWhiteSpace(input))
-            {
-                Console.WriteLine("You need to choose a valid database option");
-                continue;
-            }
-            switch (input)
-            {
-                case "1":
-                    choice = DatabaseType.MsSql;
-                    break;
-                case "2":
-                    choice = DatabaseType.PostgresSql;
-                    break;
-                default:
-                    Console.WriteLine("You need to choose a valid database option");
-                    break;
-            }
-        }
-
-        return choice;
-    }
-    private static string GetYesNoInput(string prompt)
-    {
-        while (true)
-        {
-            Console.WriteLine(prompt);
-            string? input = Console.ReadLine()?.Trim();
-            if (input?.ToLower() is "y" or "n")
-                return input;
-            Console.WriteLine("Please enter a valid option: y or n");
-        }
+        return AnsiConsole.Prompt(
+            new SelectionPrompt<DatabaseType>()
+                .Title("[bold cyan]Choose database option:[/]")
+                .AddChoices(DatabaseType.MsSql, DatabaseType.PostgresSql)
+                .HighlightStyle(new Style(foreground: Color.Yellow, decoration: Decoration.Bold)));
     }
 }
