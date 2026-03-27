@@ -6,7 +6,7 @@ public static class DatabaseAssistant
 {
     public static string CreateString(DatabaseType dbOption)
     {
-        string? connectionString = null;
+        string connectionString = String.Empty;
 
         string? dbName = null;
         // choose a name for the database
@@ -40,60 +40,66 @@ public static class DatabaseAssistant
 
     }
 
-    private static string? CreatePostgresString(string? dbName)
+    private static string CreatePostgresString(string dbName)
     {
-        string? connectionString = null;
-        while (connectionString == null)
+        Console.WriteLine("Enter host (default: localhost), leave blank for default:");
+        string? host = Console.ReadLine()?.Trim();
+        if (String.IsNullOrWhiteSpace(host))
         {
-            Console.WriteLine("Enter host (default: localhost), leave blank for default:");
-            string? host = Console.ReadLine()?.Trim();
-            if (String.IsNullOrWhiteSpace(host))
-            {
-                host = "localhost";
-            }
-
-            Console.WriteLine("Enter port (default: 5432), leave blank for default:");
-            string? port = Console.ReadLine()?.Trim();
-            if (String.IsNullOrWhiteSpace(port))
-            {
-                port = "5432";
-            }
-
-            Console.WriteLine("Enter username:");
-            string? username = Console.ReadLine()?.Trim();
-
-            Console.WriteLine("Enter password:");
-            string? password = Console.ReadLine()?.Trim();
-
-            connectionString = $"Host={host};Port={port};Database={dbName};Username={username};Password={password}";
+            host = "localhost";
         }
+
+        Console.WriteLine("Enter port (default: 5432), leave blank for default:");
+        string? port = Console.ReadLine()?.Trim();
+        if (String.IsNullOrWhiteSpace(port))
+        {
+            port = "5432";
+        }
+
+        Console.WriteLine("Enter username:");
+        Prompt();
+        string? username = Console.ReadLine()?.Trim();
+
+        Console.WriteLine("Enter password:");
+        Prompt();
+        string? password = Console.ReadLine()?.Trim();
+
+        string connectionString = $"Host={host};Port={port};Database={dbName};Username={username};Password={password}";
+
 
         return connectionString;
     }
 
+    private static void Prompt()
+    {
+        while (true)
+        {
+            string? input = Console.ReadLine()?.Trim();
+            if (!String.IsNullOrWhiteSpace(input))
+            {
+                break;
+            }
+            Console.WriteLine("Username cannot be empty. Please enter a valid username:");
+        }
+    }
+
     private static string CreateMsSqlString(string dbName)
     {
-        string? connectionString = null;
-        while (connectionString == null)
+        Console.WriteLine("Enter server (default: (localdb)\\mssqllocaldb), leave blank for default:");
+        string? server = Console.ReadLine();
+        if (String.IsNullOrWhiteSpace(server))
         {
-            Console.WriteLine("Enter server (default: (localdb)\\mssqllocaldb), leave blank for default:");
-            string? server = Console.ReadLine();
-            if (String.IsNullOrWhiteSpace(server))
-            {
-                server = "(localdb)\\mssqllocaldb";
-            }
-
-            string serverCertificate = GetYesNoInput("Do you want to add \"TrustServerCertificate=True\" (y/n)");
-            string activeResultSets = GetYesNoInput("Do you want to add \"MultipleActiveResultSets=True\" (y/n)");
-            string trustedConnection = GetYesNoInput("Do you want to add \"Trusted_Connection=True\" (y/n)");
-
-            string trustCert = serverCertificate == "y" ? "TrustServerCertificate=True;" : "";
-            string trustConn = trustedConnection == "y" ? "Trusted_Connection=True;" : "";
-            string mars = activeResultSets == "y" ? "MultipleActiveResultSets=True;" : "";
-            connectionString = $"\"Server={server};Database={dbName};{trustCert}{trustConn}{mars}\"";
-
+            server = "(localdb)\\mssqllocaldb";
         }
 
+        string serverCertificate = GetYesNoInput("Do you want to add \"TrustServerCertificate=True\" (y/n)");
+        string activeResultSets = GetYesNoInput("Do you want to add \"MultipleActiveResultSets=True\" (y/n)");
+        string trustedConnection = GetYesNoInput("Do you want to add \"Trusted_Connection=True\" (y/n)");
+
+        string trustCert = serverCertificate == "y" ? "TrustServerCertificate=True;" : "";
+        string trustConn = trustedConnection == "y" ? "Trusted_Connection=True;" : "";
+        string mars = activeResultSets == "y" ? "MultipleActiveResultSets=True;" : "";
+        string connectionString = $"\"Server={server};Database={dbName};{trustCert}{trustConn}{mars}\"";
         return connectionString;
     }
 
