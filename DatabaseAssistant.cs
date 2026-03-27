@@ -73,27 +73,21 @@ public static class DatabaseAssistant
 
     private static string CreateMsSqlString(string dbName)
     {
-        string? connectionString = null;
-        while (connectionString == null)
+        Console.WriteLine("Enter server (default: (localdb)\\mssqllocaldb), leave blank for default:");
+        string? server = Console.ReadLine();
+        if (String.IsNullOrWhiteSpace(server))
         {
-            Console.WriteLine("Enter server (default: (localdb)\\mssqllocaldb), leave blank for default:");
-            string? server = Console.ReadLine();
-            if (String.IsNullOrWhiteSpace(server))
-            {
-                server = "(localdb)\\mssqllocaldb";
-            }
-
-            string serverCertificate = GetYesNoInput("Do you want to add \"TrustServerCertificate=True\" (y/n)");
-            string activeResultSets = GetYesNoInput("Do you want to add \"MultipleActiveResultSets=True\" (y/n)");
-            string trustedConnection = GetYesNoInput("Do you want to add \"Trusted_Connection=True\" (y/n)");
-
-            string trustCert = serverCertificate == "y" ? "TrustServerCertificate=True;" : "";
-            string trustConn = trustedConnection == "y" ? "Trusted_Connection=True;" : "";
-            string mars = activeResultSets == "y" ? "MultipleActiveResultSets=True;" : "";
-            connectionString = $"\"Server={server};Database={dbName};{trustCert}{trustConn}{mars}\"";
-
+            server = "(localdb)\\mssqllocaldb";
         }
 
+        string serverCertificate = GetYesNoInput("Do you want to add \"TrustServerCertificate=True\" (y/n)");
+        string activeResultSets = GetYesNoInput("Do you want to add \"MultipleActiveResultSets=True\" (y/n)");
+        string trustedConnection = GetYesNoInput("Do you want to add \"Trusted_Connection=True\" (y/n)");
+
+        string trustCert = serverCertificate == "y" ? "TrustServerCertificate=True;" : "";
+        string trustConn = trustedConnection == "y" ? "Trusted_Connection=True;" : "";
+        string mars = activeResultSets == "y" ? "MultipleActiveResultSets=True;" : "";
+        string connectionString = $"\"Server={server};Database={dbName};{trustCert}{trustConn}{mars}\"";
         return connectionString;
     }
 
