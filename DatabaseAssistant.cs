@@ -6,7 +6,7 @@ public static class DatabaseAssistant
 {
     public static string CreateString(DatabaseType dbOption)
     {
-        string? connectionString = null;
+        string connectionString = String.Empty;
 
         string? dbName = null;
         // choose a name for the database
@@ -40,7 +40,7 @@ public static class DatabaseAssistant
 
     }
 
-    private static string? CreatePostgresString(string? dbName)
+    private static string CreatePostgresString(string dbName)
     {
         string? connectionString = null;
         while (connectionString == null)
