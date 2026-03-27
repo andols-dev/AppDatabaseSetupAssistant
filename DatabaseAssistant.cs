@@ -42,31 +42,28 @@ public static class DatabaseAssistant
 
     private static string CreatePostgresString(string dbName)
     {
-        string? connectionString = null;
-        while (connectionString == null)
+        Console.WriteLine("Enter host (default: localhost), leave blank for default:");
+        string? host = Console.ReadLine()?.Trim();
+        if (String.IsNullOrWhiteSpace(host))
         {
-            Console.WriteLine("Enter host (default: localhost), leave blank for default:");
-            string? host = Console.ReadLine()?.Trim();
-            if (String.IsNullOrWhiteSpace(host))
-            {
-                host = "localhost";
-            }
-
-            Console.WriteLine("Enter port (default: 5432), leave blank for default:");
-            string? port = Console.ReadLine()?.Trim();
-            if (String.IsNullOrWhiteSpace(port))
-            {
-                port = "5432";
-            }
-
-            Console.WriteLine("Enter username:");
-            string? username = Console.ReadLine()?.Trim();
-
-            Console.WriteLine("Enter password:");
-            string? password = Console.ReadLine()?.Trim();
-
-            connectionString = $"Host={host};Port={port};Database={dbName};Username={username};Password={password}";
+            host = "localhost";
         }
+
+        Console.WriteLine("Enter port (default: 5432), leave blank for default:");
+        string? port = Console.ReadLine()?.Trim();
+        if (String.IsNullOrWhiteSpace(port))
+        {
+            port = "5432";
+        }
+
+        Console.WriteLine("Enter username:");
+        string? username = Console.ReadLine()?.Trim();
+
+        Console.WriteLine("Enter password:");
+        string? password = Console.ReadLine()?.Trim();
+
+        string connectionString = $"Host={host};Port={port};Database={dbName};Username={username};Password={password}";
+
 
         return connectionString;
     }
